@@ -29,6 +29,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -133,7 +134,7 @@ nav {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 800px;
+  width: min(800px, 100vw);
   height: 600px;
   background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
   pointer-events: none;
@@ -689,7 +690,7 @@ section {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 600px;
+  width: min(600px, 100vw);
   height: 400px;
   background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
   pointer-events: none;

@@ -1,5 +1,30 @@
 'use strict';
 
+/* ── Mobile Navigation ── */
+(function initMobileNav() {
+  const toggle = document.getElementById('navToggle');
+  const menu = document.getElementById('navMobile');
+  const overlay = document.getElementById('navOverlay');
+
+  function closeMenu() {
+    menu.classList.remove('open');
+    overlay.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  toggle.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('open');
+    overlay.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  overlay.addEventListener('click', closeMenu);
+
+  menu.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', closeMenu);
+  });
+})();
+
 /* ── Clipboard ── */
 function copyCommand() {
   navigator.clipboard.writeText('npx gitops-ai bootstrap');

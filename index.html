@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitOps AI — One Command to a Production-Ready Kubernetes Cluster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>GitOps AI — One Command to an AI Cluster</title>
   <meta name="description" content="GitOps-managed Kubernetes infrastructure for AI-powered applications. One bootstrap command provisions a secure, Git-backed cluster with Flux CD.">
   <meta name="theme-color" content="#09090b">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,14 @@
       <div class="logo-icon">G</div>
       GitOps AI
     </a>
-    <ul class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <ul class="nav-links nav-links--desktop">
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#features">Features</a></li>
       <li><a href="#architecture">Architecture</a></li>
@@ -36,6 +43,20 @@
   </div>
 </nav>
 
+<!-- Mobile Menu (outside nav to avoid backdrop-filter containing block) -->
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-mobile" id="navMobile">
+  <ul class="nav-mobile-links">
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#components">Components</a></li>
+    <li><a href="#docs/prerequisites" onclick="openDocs(event, 'prerequisites')">Docs</a></li>
+    <li><a href="https://gitlab.com/everythings-gonna-be-alright/gitops_ai_bootstrapper" target="_blank" rel="noopener">GitLab</a></li>
+    <li><a href="#get-started" class="nav-cta">Get Started</a></li>
+  </ul>
+</div>
+
 <!-- Hero -->
 <section class="hero">
   <div class="hero-badge animate">
@@ -43,7 +64,7 @@
     Powered by Flux Operator &amp; Flux CD
   </div>
   <h1 class="animate animate-d1">
-    One Command to a<br><span class="gradient">AI Cluster</span>
+    One Command to an<br><span class="gradient">AI Cluster</span>
   </h1>
   <p class="animate animate-d2">
     GitOps-managed Kubernetes infrastructure for AI-powered applications.
@@ -56,7 +77,7 @@
       <span class="copy-hint">click to copy</span>
     </div>
   </div>
-  <div class="hero-actions animate animate-d4" style="margin-top: 16px;">
+  <div class="hero-actions animate animate-d4">
     <a href="#get-started" class="btn-primary">Get Started</a>
     <a href="#architecture" class="btn-secondary">See Architecture</a>
   </div>
@@ -118,7 +139,7 @@
 </section>
 
 <!-- FEATURES -->
-<section id="features" style="background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+<section id="features" class="section--alt">
   <div class="section-inner">
     <span class="section-label">Features</span>
     <h2 class="section-title">Built for security, speed, and simplicity</h2>
@@ -163,7 +184,7 @@
   <div class="section-inner">
     <span class="section-label">AI-Native Infrastructure</span>
     <h2 class="section-title">Modify your cluster with AI coding assistants</h2>
-    <p class="section-desc" style="margin-left: auto; margin-right: auto;">
+    <p class="section-desc section-desc--centered">
       Your infrastructure is YAML and Helm values. Describe what you want in natural language, commit the result, and Flux applies it to the cluster.
     </p>
     <div class="ai-tools">
@@ -197,6 +218,29 @@
 │  controllers in cluster     │    │  kustomize-controller       │
 │                             │    │  helm-controller            │
 └─────────────────────────────┘    └─────────────────────────────┘</div>
+    <div class="arch-mobile">
+      <div class="arch-mobile-flow">
+        <div class="arch-mobile-card">
+          <h4 style="color: var(--accent-light);">Developer / AI</h4>
+          <p>Push code changes via git</p>
+        </div>
+        <div class="arch-mobile-arrow">▼</div>
+        <div class="arch-mobile-card">
+          <h4 style="color: var(--cyan);">GitLab Repo</h4>
+          <p>Source of truth for all manifests. SOPS-encrypted secrets decrypted in-memory.</p>
+        </div>
+        <div class="arch-mobile-arrow">▼</div>
+        <div class="arch-mobile-card">
+          <h4 style="color: var(--green);">Flux Controllers</h4>
+          <p>Polls the repo, applies manifests, auto-corrects drift in the cluster.</p>
+        </div>
+        <div class="arch-mobile-arrow">▼</div>
+        <div class="arch-mobile-card">
+          <h4 style="color: var(--accent-light);">Kubernetes Cluster</h4>
+          <p>Flux Operator manages source-controller, kustomize-controller, and helm-controller.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -274,28 +318,28 @@
 </section>
 
 <!-- Requirements -->
-<section style="background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+<section class="section--alt">
   <div class="section-inner">
     <span class="section-label">Requirements</span>
     <h2 class="section-title">Minimal requirements, maximum output</h2>
     <p class="section-desc">Run on a bare Ubuntu server or locally on macOS. The bootstrap installs all dependencies.</p>
     <div class="steps-grid">
       <div class="step-card">
-        <div class="step-number" style="background: var(--green-glow); color: var(--green);">
+        <div class="step-number step-number--green">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
         </div>
         <h3>Compute</h3>
         <p>2+ CPU cores, 4+ GB RAM, 20+ GB disk. Ubuntu 25.04+ or macOS.</p>
       </div>
       <div class="step-card">
-        <div class="step-number" style="background: rgba(249,115,22,0.12); color: var(--orange);">
+        <div class="step-number step-number--orange">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <h3>Credentials</h3>
         <p>GitLab PAT (required), Cloudflare API Token (optional), OpenAI Key (optional).</p>
       </div>
       <div class="step-card">
-        <div class="step-number" style="background: rgba(6,182,212,0.12); color: var(--cyan);">
+        <div class="step-number step-number--cyan">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
         </div>
         <h3>Runtime</h3>
@@ -311,16 +355,17 @@
     <span class="section-label">Get Started</span>
     <h2 class="section-title">Your GitOps cluster is one command away</h2>
     <p class="section-desc">Open your terminal, run the command, and the wizard handles the rest.</p>
-    <div class="terminal-box" onclick="copyCommand()" style="margin-bottom: 24px;">
-      <span class="prompt">$</span>
-      <span class="cmd">npx gitops-ai bootstrap</span>
-      <span class="copy-hint">click to copy</span>
+    <div class="cta-actions">
+      <div class="terminal-box" onclick="copyCommand()">
+        <span class="prompt">$</span>
+        <span class="cmd">npx gitops-ai bootstrap</span>
+        <span class="copy-hint">click to copy</span>
+      </div>
+      <a href="https://gitlab.com/everythings-gonna-be-alright/fluxcd_ai_template" target="_blank" rel="noopener" class="btn-secondary">
+        View on GitLab
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+      </a>
     </div>
-    <br>
-    <a href="https://gitlab.com/everythings-gonna-be-alright/fluxcd_ai_template" target="_blank" rel="noopener" class="btn-secondary" style="margin-top: 12px;">
-      View on GitLab
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-    </a>
   </div>
 </section>
 

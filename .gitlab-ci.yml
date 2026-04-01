@@ -1,0 +1,19 @@
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  image: alpine:3.20
+  script:
+    - mkdir -p public
+    - cp -r *.html public/
+    - cp -r assets/* public/ 2>/dev/null || true
+    - cp -r css/* public/css/ 2>/dev/null || true
+    - cp -r js/* public/js/ 2>/dev/null || true
+    - cp -r images/* public/images/ 2>/dev/null || true
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

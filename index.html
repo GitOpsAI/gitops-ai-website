@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitOps AI — One Command to a Production-Ready Kubernetes Cluster</title>
+  <meta name="description" content="GitOps-managed Kubernetes infrastructure for AI-powered applications. One bootstrap command provisions a secure, Git-backed cluster with Flux CD.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js" defer></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #09090b;
+      --bg-card: #18181b;
+      --bg-card-hover: #1e1e22;
+      --border: #27272a;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --green: #22c55e;
+      --green-glow: rgba(34, 197, 94, 0.12);
+      --orange: #f97316;
+      --cyan: #06b6d4;
+      --radius: 12px;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(9, 9, 11, 0.8);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: white !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent-light) !important;
+      transform: translateY(-1px);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 160px 24px 100px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      max-width: 800px;
+      margin: 0 auto 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* TERMINAL */
+    .terminal-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-family: var(--mono);
+      font-size: 1rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .terminal-box:hover {
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+    }
+
+    .terminal-box .prompt { color: var(--green); }
+    .terminal-box .cmd { color: var(--text); }
+
+    .terminal-box .copy-hint {
+      font-family: var(--font);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .terminal-box:hover .copy-hint { opacity: 1; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-muted);
+      background: var(--bg-card);
+    }
+
+    /* LOGOS ROW */
+    .logos-section {
+      padding: 60px 24px 40px;
+      text-align: center;
+    }
+
+    .logos-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .logos-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      opacity: 0.6;
+    }
+
+    .logos-row span {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logos-row svg { width: 24px; height: 24px; fill: currentColor; }
+
+    /* SECTIONS */
+    section {
+      padding: 100px 24px;
+    }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent-light);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 640px;
+      line-height: 1.7;
+      margin-bottom: 56px;
+    }
+
+    /* HOW IT WORKS - 3 STEPS */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      transition: border-color 0.3s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .step-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .step-card:hover::before { opacity: 1; }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--accent-glow);
+      color: var(--accent-light);
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .step-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .step-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* FEATURES GRID */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon.purple { background: var(--accent-glow); }
+    .feature-icon.green { background: var(--green-glow); }
+    .feature-icon.orange { background: rgba(249, 115, 22, 0.12); }
+    .feature-icon.cyan { background: rgba(6, 182, 212, 0.12); }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* ARCHITECTURE DIAGRAM */
+    .arch-section {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .arch-diagram {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      overflow-x: auto;
+      white-space: pre;
+      position: relative;
+    }
+
+    .arch-diagram .highlight { color: var(--accent-light); }
+    .arch-diagram .green-text { color: var(--green); }
+    .arch-diagram .cyan-text { color: var(--cyan); }
+    .arch-diagram .orange-text { color: var(--orange); }
+
+    /* COMPONENTS */
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .component-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 0.2s;
+    }
+
+    .component-card:hover { border-color: var(--accent); }
+
+    .component-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .component-dot.required { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+    .component-dot.optional { background: var(--accent-light); box-shadow: 0 0 8px var(--accent-glow); }
+    .component-dot.dns { background: var(--orange); }
+
+    .component-info h4 { font-size: 0.95rem; font-weight: 600; }
+    .component-info p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* AI-FRIENDLY SECTION */
+    .ai-section {
+      text-align: center;
+    }
+
+    .ai-tools {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .ai-tool {
+      padding: 20px 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .ai-tool:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section .section-title {
+      max-width: 700px;
+      margin: 0 auto 20px;
+    }
+
+    .cta-section .section-desc {
+      margin: 0 auto 40px;
+      text-align: center;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--text); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .steps-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 120px 20px 60px; }
+      section { padding: 60px 20px; }
+      .arch-diagram { padding: 24px; font-size: 0.75rem; }
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .animate-d1 { animation-delay: 0.1s; }
+    .animate-d2 { animation-delay: 0.2s; }
+    .animate-d3 { animation-delay: 0.3s; }
+    .animate-d4 { animation-delay: 0.4s; }
+
+    /* TOOLTIP */
+    .copied-tooltip {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--green);
+      color: var(--bg);
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 200;
+    }
+
+    .copied-tooltip.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* DOCS OVERLAY */
+    .docs-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+    }
+
+    .docs-overlay.active { display: flex; }
+
+    .docs-topbar {
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      flex-shrink: 0;
+      background: rgba(9, 9, 11, 0.95);
+      backdrop-filter: blur(12px);
+    }
+
+    .docs-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .docs-back:hover {
+      color: var(--text);
+      background: var(--bg-card);
+    }
+
+    .docs-topbar-title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .docs-topbar-gitlab {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .docs-topbar-gitlab:hover {
+      border-color: var(--text-muted);
+      color: var(--text);
+    }
+
+    .docs-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .docs-sidebar {
+      width: 260px;
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .docs-sidebar-section {
+      padding: 0 16px;
+      margin-bottom: 8px;
+    }
+
+    .docs-sidebar-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      font-weight: 600;
+    }
+
+    .docs-sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .docs-sidebar a:hover {
+      color: var(--text);
+      background: var(--bg-card);
+    }
+
+    .docs-sidebar a.active {
+      color: var(--accent-light);
+      background: var(--accent-glow);
+    }
+
+    .docs-sidebar a .doc-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    .docs-sidebar a.active .doc-icon { opacity: 1; }
+
+    .docs-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 48px 64px 80px;
+    }
+
+    .docs-content-inner {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .docs-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 80px 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .docs-loading .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent-light);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .docs-error {
+      padding: 24px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius);
+      color: #fca5a5;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .docs-error code {
+      background: rgba(239, 68, 68, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 0.85em;
+    }
+
+    /* MARKDOWN RENDERED CONTENT */
+    .md-content h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px;
+      line-height: 1.2;
+    }
+
+    .md-content h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin: 48px 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.01em;
+    }
+
+    .md-content h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 32px 0 12px;
+    }
+
+    .md-content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 24px 0 8px;
+    }
+
+    .md-content p {
+      margin: 0 0 16px;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+
+    .md-content a {
+      color: var(--accent-light);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .md-content a:hover { border-bottom-color: var(--accent-light); }
+
+    .md-content strong { color: var(--text); font-weight: 600; }
+
+    .md-content code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: var(--bg-card);
+      padding: 2px 7px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      color: var(--accent-light);
+    }
+
+    .md-content pre {
+      margin: 0 0 20px;
+      padding: 20px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .md-content pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .md-content ul, .md-content ol {
+      margin: 0 0 16px;
+      padding-left: 24px;
+      color: var(--text-muted);
+    }
+
+    .md-content li {
+      margin-bottom: 6px;
+      line-height: 1.7;
+    }
+
+    .md-content li code { font-size: 0.82em; }
+
+    .md-content blockquote {
+      margin: 0 0 16px;
+      padding: 12px 20px;
+      border-left: 3px solid var(--accent);
+      background: var(--accent-glow);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .md-content blockquote p { margin: 0; color: var(--text); }
+
+    .md-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 20px;
+      font-size: 0.9rem;
+    }
+
+    .md-content th {
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--border);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+
+    .md-content td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .md-content td code { font-size: 0.8em; }
+
+    .md-content tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .md-content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .md-content .mermaid-container {
+      margin: 20px 0;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    .md-content .mermaid-container svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 900px) {
+      .docs-sidebar { display: none; }
+      .docs-content { padding: 32px 20px 60px; }
+    }
+
+    @media (max-width: 640px) {
+      .docs-content { padding: 24px 16px 40px; }
+      .md-content h1 { font-size: 1.5rem; }
+      .md-content h2 { font-size: 1.2rem; }
+      .md-content pre { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="copied-tooltip" id="copiedTooltip">Copied to clipboard</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">G</div>
+      GitOps AI
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#docs/prerequisites" onclick="openDocs(event, 'prerequisites')">Docs</a></li>
+      <li><a href="https://gitlab.com/everythings-gonna-be-alright/gitops_ai_bootstrapper" target="_blank" rel="noopener">GitLab</a></li>
+      <li><a href="#get-started" class="nav-cta">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge animate">
+    <span class="hero-badge-dot"></span>
+    Powered by Flux Operator &amp; Flux CD
+  </div>
+  <h1 class="animate animate-d1">
+    One Command to a<br><span class="gradient">Production-Ready Cluster</span>
+  </h1>
+  <p class="animate animate-d2">
+    GitOps-managed Kubernetes infrastructure for AI-powered applications.
+    Secure, reproducible, and ready to modify with your favourite AI coding assistant.
+  </p>
+  <div class="hero-actions animate animate-d3">
+    <div class="terminal-box" onclick="copyCommand()" id="terminalBox">
+      <span class="prompt">$</span>
+      <span class="cmd">npx gitops-ai bootstrap</span>
+      <span class="copy-hint">click to copy</span>
+    </div>
+  </div>
+  <div class="hero-actions animate animate-d4" style="margin-top: 16px;">
+    <a href="#get-started" class="btn-primary">Get Started</a>
+    <a href="#architecture" class="btn-secondary">See Architecture</a>
+  </div>
+</section>
+
+<!-- WORKS WITH -->
+<div class="logos-section">
+  <div class="logos-label">Works with</div>
+  <div class="logos-row">
+    <span>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"/></svg>
+      GitLab
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.489.611zm4.159.54l-.003-.004 1.47-2.079c.152.088.301.18.449.276a5.15 5.15 0 0 1-.466 3.16l-2.187-.869.737-.484zM12 20.5a8.46 8.46 0 0 1-4.063-1.032l.973-2.348.002.001a6.07 6.07 0 0 0 2.715 1.139l-.276 2.237A1 1 0 0 1 12 20.5zm4.063-1.032l-.973-2.348-.002.001a6.07 6.07 0 0 1-2.715 1.139l.276 2.237A1 1 0 0 0 12 20.5a8.46 8.46 0 0 0 4.063-1.032zM12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17zM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12z"/></svg>
+      Kubernetes
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      Flux CD
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+      SOPS / Age
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+      Cloudflare
+    </span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="section-inner">
+    <span class="section-label">How It Works</span>
+    <h2 class="section-title">From zero to GitOps in three steps</h2>
+    <p class="section-desc">
+      The interactive wizard handles everything: cluster provisioning, Flux installation, secret encryption, and first reconciliation.
+    </p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>Run the Bootstrap</h3>
+        <p>A single <code>npx gitops-ai bootstrap</code> launches an interactive TUI wizard. Pick your components, enter credentials, and the CLI does the rest.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>Git Becomes Source of Truth</h3>
+        <p>The template is forked into your GitLab namespace. Cluster manifests, Helm values, and SOPS-encrypted secrets are committed automatically.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>Flux Reconciles Continuously</h3>
+        <p>Flux Operator watches your repo and applies every change. Push a commit and the cluster updates. Manual drift is auto-corrected.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <span class="section-label">Features</span>
+    <h2 class="section-title">Built for security, speed, and simplicity</h2>
+    <p class="section-desc">
+      Every decision follows NSA Kubernetes hardening guidelines and GitOps best practices.
+    </p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon purple">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Security by Default</h3>
+        <p>Non-root containers, read-only filesystems, dropped capabilities, and network policies isolating every workload. Secrets encrypted at rest with SOPS/Age before they touch Git.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h3>Infrastructure as Code</h3>
+        <p>Your entire cluster is defined in Git. Every change is versioned, reviewable, and reversible. Roll back infrastructure by reverting a commit.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon orange">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        </div>
+        <h3>Reproducible Deployments</h3>
+        <p>Same bootstrap, identical cluster, every time. Flux auto-corrects drift within minutes. No manual <code>kubectl apply</code> ever needed.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon cyan">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        </div>
+        <h3>Scalable &amp; Extensible</h3>
+        <p>Add worker nodes, drop in new components like Lego blocks. Need a database, queue, or AI model? Add a HelmRelease and push. Flux deploys it automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI-FRIENDLY -->
+<section class="ai-section">
+  <div class="section-inner">
+    <span class="section-label">AI-Native Infrastructure</span>
+    <h2 class="section-title">Modify your cluster with AI coding assistants</h2>
+    <p class="section-desc" style="margin-left: auto; margin-right: auto;">
+      Your infrastructure is YAML and Helm values. Describe what you want in natural language, commit the result, and Flux applies it to the cluster.
+    </p>
+    <div class="ai-tools">
+      <div class="ai-tool">Cursor</div>
+      <div class="ai-tool">GitHub Copilot</div>
+      <div class="ai-tool">Claude</div>
+      <div class="ai-tool">ChatGPT</div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture" class="arch-section">
+  <div class="section-inner">
+    <span class="section-label">Architecture</span>
+    <h2 class="section-title">Two repos, one reconciliation loop</h2>
+    <p class="section-desc">
+      The bootstrapper clones a battle-tested template into your namespace. Flux watches your repo and keeps the cluster in sync.
+    </p>
+    <div class="arch-diagram"><span class="highlight">Developer / AI</span>  ──  git push  ──▶  <span class="cyan-text">GitLab Repo</span>  ◀──  polled by  ──  <span class="green-text">Flux Controllers</span>
+                                              │                              │
+                                         source of truth               applies manifests
+                                              │                              │
+                                              ▼                              ▼
+                                     <span class="orange-text">SOPS-encrypted secrets</span>          <span class="highlight">Kubernetes Cluster</span>
+                                     decrypted in-memory              drift auto-corrected
+
+┌─────────────────────────────┐    ┌─────────────────────────────┐
+│  <span class="cyan-text">Flux Operator</span>                │    │  <span class="green-text">Flux Instance</span>                │
+│  Manages lifecycle of Flux  │───▶│  source-controller           │
+│  controllers in cluster     │    │  kustomize-controller        │
+│                             │    │  helm-controller             │
+└─────────────────────────────┘    └─────────────────────────────┘</div>
+  </div>
+</section>
+
+<!-- COMPONENTS -->
+<section id="components">
+  <div class="section-inner">
+    <span class="section-label">Components</span>
+    <h2 class="section-title">Pick what you need</h2>
+    <p class="section-desc">
+      The wizard lets you select which components to install. Required ones are always included; optional ones are your choice.
+    </p>
+    <div class="components-grid">
+      <div class="component-card">
+        <div class="component-dot required"></div>
+        <div class="component-info">
+          <h4>Helm Repositories</h4>
+          <p>Shared Helm chart repos</p>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="component-dot required"></div>
+        <div class="component-info">
+          <h4>Ingress Nginx</h4>
+          <p>External HTTP/HTTPS ingress</p>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="component-dot required"></div>
+        <div class="component-info">
+          <h4>Prometheus CRDs</h4>
+          <p>Monitoring custom resources</p>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="component-dot dns"></div>
+        <div class="component-info">
+          <h4>Cert Manager</h4>
+          <p>Auto TLS via Let's Encrypt</p>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="component-dot dns"></div>
+        <div class="component-info">
+          <h4>External DNS</h4>
+          <p>DNS records in Cloudflare</p>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="component-dot optional"></div>
+        <div class="component-info">
+          <h4>Flux Web UI</h4>
+          <p>Dashboard for Flux status</p>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="component-dot optional"></div>
+        <div class="component-info">
+          <h4>OpenClaw</h4>
+          <p>AI assistant gateway</p>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted);">
+        <div class="component-dot required" style="position: static;"></div> Required
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted);">
+        <div class="component-dot dns" style="position: static;"></div> DNS/TLS
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted);">
+        <div class="component-dot optional" style="position: static;"></div> Optional
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REQUIREMENTS -->
+<section style="background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <span class="section-label">Requirements</span>
+    <h2 class="section-title">Minimal requirements, maximum output</h2>
+    <p class="section-desc">Run on a bare Ubuntu server or locally on macOS. The bootstrap installs all dependencies.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number" style="background: var(--green-glow); color: var(--green);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+        </div>
+        <h3>Compute</h3>
+        <p>2+ CPU cores, 4+ GB RAM, 20+ GB disk. Ubuntu 25.04+ or macOS.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number" style="background: rgba(249,115,22,0.12); color: var(--orange);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3>Credentials</h3>
+        <p>GitLab PAT (required), Cloudflare API Token (optional), OpenAI Key (optional).</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number" style="background: rgba(6,182,212,0.12); color: var(--cyan);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <h3>Runtime</h3>
+        <p>Node.js 18+. Docker runtime on macOS (Docker Desktop, OrbStack, or Colima).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="get-started" class="cta-section">
+  <div class="section-inner">
+    <span class="section-label">Get Started</span>
+    <h2 class="section-title">Your GitOps cluster is one command away</h2>
+    <p class="section-desc">Open your terminal, run the command, and the wizard handles the rest.</p>
+    <div class="terminal-box" onclick="copyCommand()" style="margin-bottom: 24px;">
+      <span class="prompt">$</span>
+      <span class="cmd">npx gitops-ai bootstrap</span>
+      <span class="copy-hint">click to copy</span>
+    </div>
+    <br>
+    <a href="https://gitlab.com/everythings-gonna-be-alright/fluxcd_ai_template" target="_blank" rel="noopener" class="btn-secondary" style="margin-top: 12px;">
+      View on GitLab
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- DOCS OVERLAY -->
+<div class="docs-overlay" id="docsOverlay">
+  <div class="docs-topbar">
+    <a href="#" class="docs-back" onclick="closeDocs(event)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+    <span class="docs-topbar-title">Documentation</span>
+    <a class="docs-topbar-gitlab" id="docsGitlabLink" href="#" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View on GitLab
+    </a>
+  </div>
+  <div class="docs-body">
+    <div class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-label">Getting Started</div>
+        <a href="#docs/prerequisites" onclick="loadDoc(event, 'prerequisites')" data-doc="prerequisites">
+          <svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Prerequisites
+        </a>
+        <a href="#docs/bootstrap" onclick="loadDoc(event, 'bootstrap')" data-doc="bootstrap">
+          <svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Bootstrap Walkthrough
+        </a>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-label">Reference</div>
+        <a href="#docs/architecture" onclick="loadDoc(event, 'architecture')" data-doc="architecture">
+          <svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          Architecture
+        </a>
+        <a href="#docs/configuration" onclick="loadDoc(event, 'configuration')" data-doc="configuration">
+          <svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Configuration
+        </a>
+      </div>
+    </div>
+    <div class="docs-content" id="docsContent">
+      <div class="docs-content-inner" id="docsContentInner">
+        <div class="docs-loading">
+          <div class="spinner"></div>
+          Loading documentation...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    GitOps AI &mdash; MIT License &mdash;
+    <a href="https://gitlab.com/everythings-gonna-be-alright/fluxcd_ai_template" target="_blank" rel="noopener">GitLab</a>
+  </p>
+</footer>
+
+<script>
+function copyCommand() {
+  navigator.clipboard.writeText('npx gitops-ai bootstrap');
+  const tooltip = document.getElementById('copiedTooltip');
+  tooltip.classList.add('show');
+  setTimeout(() => tooltip.classList.remove('show'), 2000);
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.step-card, .feature-card, .component-card, .ai-tool').forEach(el => {
+  el.style.opacity = '0';
+  el.style.animation = 'fadeUp 0.5s ease forwards';
+  el.style.animationPlayState = 'paused';
+  observer.observe(el);
+});
+
+/* ── DOCS VIEWER ── */
+const GITLAB_PROJECT = 'everythings-gonna-be-alright/gitops_ai_bootstrapper';
+const GITLAB_BRANCH = 'main';
+const DOCS_MAP = {
+  prerequisites:  { path: 'docs/prerequisites.md',  title: 'Prerequisites' },
+  bootstrap:      { path: 'docs/bootstrap.md',      title: 'Bootstrap Walkthrough' },
+  architecture:   { path: 'docs/architecture.md',   title: 'Architecture' },
+  configuration:  { path: 'docs/configuration.md',  title: 'Configuration' },
+};
+
+const docsCache = {};
+let mermaidInitialized = false;
+
+function gitlabRawUrl(filePath) {
+  const proj = encodeURIComponent(GITLAB_PROJECT);
+  const file = encodeURIComponent(filePath);
+  return `https://gitlab.com/api/v4/projects/${proj}/repository/files/${file}/raw?ref=${GITLAB_BRANCH}`;
+}
+
+function gitlabBlobUrl(filePath) {
+  return `https://gitlab.com/${GITLAB_PROJECT}/-/blob/${GITLAB_BRANCH}/${filePath}`;
+}
+
+async function fetchDoc(docId) {
+  if (docsCache[docId]) return docsCache[docId];
+  const info = DOCS_MAP[docId];
+  if (!info) throw new Error(`Unknown doc: ${docId}`);
+  const res = await fetch(gitlabRawUrl(info.path));
+  if (!res.ok) throw new Error(`GitLab API returned ${res.status}. The repository may be private or the file path may have changed.`);
+  const text = await res.text();
+  docsCache[docId] = text;
+  return text;
+}
+
+function renderMarkdown(md) {
+  const renderer = new marked.Renderer();
+
+  renderer.code = function(codeObj) {
+    const text = typeof codeObj === 'object' ? codeObj.text : codeObj;
+    const lang = typeof codeObj === 'object' ? codeObj.lang : arguments[1];
+
+    if (lang === 'mermaid') {
+      return `<div class="mermaid-container"><pre class="mermaid">${text}</pre></div>`;
+    }
+    const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `<pre><code>${escaped}</code></pre>`;
+  };
+
+  renderer.link = function(linkObj) {
+    const href = typeof linkObj === 'object' ? linkObj.href : linkObj;
+    const text = typeof linkObj === 'object' ? linkObj.text : arguments[1];
+
+    if (href && href.endsWith('.md') && !href.startsWith('http')) {
+      const docId = href.replace(/^.*\//, '').replace('.md', '').replace(/#.*/, '');
+      if (DOCS_MAP[docId]) {
+        return `<a href="#docs/${docId}" onclick="loadDoc(event, '${docId}')">${text}</a>`;
+      }
+    }
+    const isExternal = href && href.startsWith('http');
+    const attrs = isExternal ? ' target="_blank" rel="noopener"' : '';
+    return `<a href="${href}"${attrs}>${text}</a>`;
+  };
+
+  marked.setOptions({ renderer, gfm: true, breaks: false });
+  return marked.parse(md);
+}
+
+async function renderMermaidDiagrams() {
+  const containers = document.querySelectorAll('#docsContentInner .mermaid');
+  if (containers.length === 0) return;
+
+  if (!mermaidInitialized && typeof mermaid !== 'undefined') {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#18181b',
+        primaryColor: '#6366f1',
+        primaryTextColor: '#fafafa',
+        primaryBorderColor: '#27272a',
+        lineColor: '#a1a1aa',
+        secondaryColor: '#1e1e22',
+        tertiaryColor: '#09090b',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '14px',
+      },
+      flowchart: { htmlLabels: true, curve: 'basis' },
+    });
+    mermaidInitialized = true;
+  }
+
+  try {
+    await mermaid.run({ nodes: containers });
+  } catch (e) {
+    console.warn('Mermaid render error:', e);
+  }
+}
+
+async function showDoc(docId) {
+  const inner = document.getElementById('docsContentInner');
+  const content = document.getElementById('docsContent');
+
+  inner.innerHTML = '<div class="docs-loading"><div class="spinner"></div>Loading documentation...</div>';
+  content.scrollTop = 0;
+
+  document.querySelectorAll('.docs-sidebar a[data-doc]').forEach(a => {
+    a.classList.toggle('active', a.dataset.doc === docId);
+  });
+
+  const info = DOCS_MAP[docId];
+  if (info) {
+    document.getElementById('docsGitlabLink').href = gitlabBlobUrl(info.path);
+  }
+
+  try {
+    const md = await fetchDoc(docId);
+    const html = renderMarkdown(md);
+    inner.innerHTML = `<div class="md-content">${html}</div>`;
+    await renderMermaidDiagrams();
+  } catch (err) {
+    inner.innerHTML = `<div class="docs-error">
+      <strong>Failed to load documentation</strong><br><br>
+      ${err.message}<br><br>
+      You can view the docs directly on
+      <a href="${gitlabBlobUrl(info?.path || 'docs/')}" target="_blank" rel="noopener">GitLab</a>.
+    </div>`;
+  }
+}
+
+function openDocs(e, docId) {
+  if (e) e.preventDefault();
+  document.getElementById('docsOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  window.location.hash = `docs/${docId}`;
+  showDoc(docId);
+}
+
+function closeDocs(e) {
+  if (e) e.preventDefault();
+  document.getElementById('docsOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  history.pushState(null, '', window.location.pathname);
+}
+
+function loadDoc(e, docId) {
+  if (e) e.preventDefault();
+  window.location.hash = `docs/${docId}`;
+  showDoc(docId);
+}
+
+function handleHash() {
+  const hash = window.location.hash;
+  if (hash.startsWith('#docs/')) {
+    const docId = hash.replace('#docs/', '');
+    if (DOCS_MAP[docId]) {
+      document.getElementById('docsOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      showDoc(docId);
+    }
+  } else {
+    const overlay = document.getElementById('docsOverlay');
+    if (overlay.classList.contains('active')) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+}
+
+window.addEventListener('hashchange', handleHash);
+window.addEventListener('DOMContentLoaded', handleHash);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('docsOverlay').classList.contains('active')) {
+    closeDocs();
+  }
+});
+</script>
+
+</body>
+</html>

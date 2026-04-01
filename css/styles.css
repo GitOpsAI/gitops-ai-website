@@ -575,6 +575,107 @@ section {
   line-height: 1;
 }
 
+/* ── Architecture Detail Sections ── */
+.arch-detail {
+  margin-top: 56px;
+}
+
+.arch-detail-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.arch-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.arch-detail-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  transition: border-color 0.2s;
+}
+
+.arch-detail-card:hover {
+  border-color: var(--accent);
+}
+
+.arch-detail-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.arch-detail-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.arch-detail-card p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.arch-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.arch-step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+
+.arch-step:hover {
+  border-color: var(--accent);
+}
+
+.arch-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.arch-step h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.arch-step p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
 /* ── Components Grid ── */
 .components-grid {
   display: grid;
@@ -711,6 +812,13 @@ section {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* ── Footer ── */
@@ -1218,6 +1326,10 @@ footer a:hover {
     grid-template-columns: 1fr;
   }
 
+  .arch-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
   .nav-links--desktop {
     display: none;
   }
@@ -1346,6 +1458,19 @@ footer a:hover {
     display: block;
   }
 
+  .arch-detail {
+    margin-top: 40px;
+  }
+
+  .arch-detail-card {
+    padding: 20px 18px;
+  }
+
+  .arch-step {
+    padding: 18px 16px;
+    gap: 14px;
+  }
+
   .ai-tools {
     gap: 10px;
     margin-top: 24px;
@@ -1383,8 +1508,15 @@ footer a:hover {
     margin-bottom: 0;
   }
 
-  .cta-actions .btn-secondary {
-    margin-top: 0 !important;
+  .cta-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cta-buttons .btn-primary,
+  .cta-buttons .btn-secondary {
+    width: 100%;
+    justify-content: center;
   }
 
   footer {

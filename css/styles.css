@@ -719,6 +719,29 @@ section {
   background: var(--orange);
 }
 
+.component-card--more {
+  border-style: dashed;
+  background: transparent;
+}
+
+.component-card--more:hover {
+  background: var(--bg-card);
+}
+
+.component-more-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px dashed var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
 .component-info h4 {
   font-size: 0.95rem;
   font-weight: 600;

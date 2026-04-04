@@ -7,7 +7,7 @@
   <!-- Primary SEO -->
   <title>GitOps AI — One Command, Infinite AI</title>
   <meta name="description" content="GitOps-managed Kubernetes infrastructure for AI-powered applications. One bootstrap command provisions a secure, Git-backed cluster with Flux CD, SOPS encryption, Cert Manager, and Grafana monitoring.">
-  <meta name="keywords" content="GitOps, Kubernetes, Flux CD, AI infrastructure, k3s, SOPS, Helm, DevOps, GitLab, bootstrap, cluster, Cloudflare, Prometheus, Grafana">
+  <meta name="keywords" content="GitOps, Kubernetes, Flux CD, AI infrastructure, k3s, SOPS, Helm, DevOps, GitLab, GitHub, bootstrap, cluster, Cloudflare, Prometheus, Grafana">
   <meta name="author" content="GitOps AI">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="theme-color" content="#09090b">
@@ -140,12 +140,16 @@
 </section>
 
 <!-- Works With -->
-<div class="logos-section">
+  <div class="logos-section">
   <div class="logos-label">Works with</div>
   <div class="logos-row">
     <span>
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"/></svg>
       GitLab
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      GitHub
     </span>
     <span>
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.489.611zm4.159.54l-.003-.004 1.47-2.079c.152.088.301.18.449.276a5.15 5.15 0 0 1-.466 3.16l-2.187-.869.737-.484zM12 20.5a8.46 8.46 0 0 1-4.063-1.032l.973-2.348.002.001a6.07 6.07 0 0 0 2.715 1.139l-.276 2.237A1 1 0 0 1 12 20.5zm4.063-1.032l-.973-2.348-.002.001a6.07 6.07 0 0 1-2.715 1.139l.276 2.237A1 1 0 0 0 12 20.5a8.46 8.46 0 0 0 4.063-1.032zM12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17zM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12z"/></svg>
@@ -183,7 +187,7 @@
       <div class="step-card">
         <div class="step-number">2</div>
         <h3>Git Becomes Source of Truth</h3>
-        <p>The template is forked into your GitLab namespace. Cluster manifests, Helm values, and SOPS-encrypted secrets are committed automatically.</p>
+        <p>The template is forked into your GitLab or GitHub namespace. Cluster manifests, Helm values, and SOPS-encrypted secrets are committed automatically.</p>
       </div>
       <div class="step-card">
         <div class="step-number">3</div>
@@ -260,7 +264,7 @@
     <p class="section-desc">
       The bootstrapper clones a battle-tested template into your namespace. Flux watches your repo and keeps the cluster in sync.
     </p>
-    <div class="arch-diagram"><span class="highlight">Developer / AI</span>  ──  git push  ──▶  <span class="cyan-text">GitLab Repo</span>  ◀──  polled by  ──  <span class="green-text">Flux Controllers</span>
+    <div class="arch-diagram"><span class="highlight">Developer / AI</span>  ──  git push  ──▶  <span class="cyan-text">Git Repo (GitLab / GitHub)</span>  ◀──  polled by  ──  <span class="green-text">Flux Controllers</span>
                                               │                              │
                                          source of truth               applies manifests
                                               │                              │
@@ -282,7 +286,7 @@
         </div>
         <div class="arch-mobile-arrow">▼</div>
         <div class="arch-mobile-card">
-          <h4 style="color: var(--cyan);">GitLab Repo</h4>
+          <h4 style="color: var(--cyan);">Git Repo (GitLab / GitHub)</h4>
           <p>Source of truth for all manifests. SOPS-encrypted secrets decrypted in-memory.</p>
         </div>
         <div class="arch-mobile-arrow">▼</div>
@@ -314,7 +318,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M6 9v12"/></svg>
           </div>
           <h4>Your GitOps Repository</h4>
-          <p>A fork cloned into your GitLab namespace. This is your single source of truth. All cluster changes flow through Git -- versioned, reviewable, and reversible.</p>
+          <p>A fork cloned into your GitLab or GitHub namespace. This is your single source of truth. All cluster changes flow through Git -- versioned, reviewable, and reversible.</p>
         </div>
       </div>
     </div>
@@ -391,7 +395,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           </div>
           <h4>Git Auth</h4>
-          <p>Flux authenticates over HTTPS using a GitLab PAT scoped to minimum permissions. No SSH keys or cluster-to-internet exposure.</p>
+          <p>Flux authenticates over HTTPS using a GitLab or GitHub PAT scoped to minimum permissions. No SSH keys or cluster-to-internet exposure.</p>
         </div>
       </div>
     </div>
@@ -525,7 +529,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <h3>Credentials</h3>
-        <p>GitLab PAT (required), Cloudflare API Token (optional), OpenAI Key (optional).</p>
+        <p>GitLab or GitHub PAT (required), Cloudflare API Token (optional), OpenAI Key (optional).</p>
       </div>
       <div class="step-card">
         <div class="step-number step-number--cyan">

@@ -55,8 +55,8 @@ document
   });
 
 /* ── Docs Viewer ── */
-const GITLAB_PROJECT = 'everythings-gonna-be-alright/gitops_ai_bootstrapper';
-const GITLAB_BRANCH = 'main';
+const GITHUB_REPO = 'GitOpsAI/gitops-ai-bootstrapper';
+const GITHUB_BRANCH = 'main';
 
 const DOCS_MAP = {
   prerequisites: { path: 'docs/prerequisites.md', title: 'Prerequisites' },
@@ -71,14 +71,12 @@ const DOCS_MAP = {
 const docsCache = {};
 let mermaidInitialized = false;
 
-function gitlabRawUrl(filePath) {
-  const proj = encodeURIComponent(GITLAB_PROJECT);
-  const file = encodeURIComponent(filePath);
-  return `https://gitlab.com/api/v4/projects/${proj}/repository/files/${file}/raw?ref=${GITLAB_BRANCH}`;
+function githubRawUrl(filePath) {
+  return `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${filePath}`;
 }
 
-function gitlabBlobUrl(filePath) {
-  return `https://gitlab.com/${GITLAB_PROJECT}/-/blob/${GITLAB_BRANCH}/${filePath}`;
+function githubBlobUrl(filePath) {
+  return `https://github.com/${GITHUB_REPO}/blob/${GITHUB_BRANCH}/${filePath}`;
 }
 
 async function fetchDoc(docId) {
@@ -87,10 +85,10 @@ async function fetchDoc(docId) {
   const info = DOCS_MAP[docId];
   if (!info) throw new Error(`Unknown doc: ${docId}`);
 
-  const res = await fetch(gitlabRawUrl(info.path));
+  const res = await fetch(githubRawUrl(info.path));
   if (!res.ok) {
     throw new Error(
-      `GitLab API returned ${res.status}. The repository may be private or the file path may have changed.`,
+      `GitHub returned ${res.status}. The repository may be private or the file path may have changed.`,
     );
   }
 
@@ -186,7 +184,7 @@ async function showDoc(docId) {
 
   const info = DOCS_MAP[docId];
   if (info) {
-    document.getElementById('docsGitlabLink').href = gitlabBlobUrl(info.path);
+    document.getElementById('docsGithubLink').href = githubBlobUrl(info.path);
   }
 
   try {
@@ -199,7 +197,7 @@ async function showDoc(docId) {
       <strong>Failed to load documentation</strong><br><br>
       ${err.message}<br><br>
       You can view the docs directly on
-      <a href="${gitlabBlobUrl(info?.path || 'docs/')}" target="_blank" rel="noopener">GitLab</a>.
+      <a href="${githubBlobUrl(info?.path || 'docs/')}" target="_blank" rel="noopener">GitHub</a>.
     </div>`;
   }
 }

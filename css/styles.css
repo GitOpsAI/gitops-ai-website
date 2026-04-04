@@ -81,16 +81,24 @@ nav {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.logo-icon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: block;
+}
+
 .nav-links {
   display: flex;
-  gap: 32px;
+  gap: 20px;
   list-style: none;
+  align-items: center;
 }
 
 .nav-links a {
@@ -99,6 +107,31 @@ nav {
   font-size: 0.875rem;
   font-weight: 500;
   transition: color 0.2s;
+}
+
+.nav-github-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 10px;
+  color: var(--text-muted);
+}
+
+.nav-github-group svg {
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.nav-github-group a {
+  font-size: 0.8rem !important;
+}
+
+.nav-github-sep {
+  color: var(--border);
+  font-size: 0.9rem;
+  user-select: none;
 }
 
 .nav-links a:hover {
@@ -625,6 +658,58 @@ section {
   color: var(--text-muted);
   font-size: 0.9rem;
   line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.arch-repo-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.arch-repo-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.arch-repo-header h4 {
+  margin-bottom: 4px !important;
+}
+
+.arch-repo-url {
+  font-size: 0.78rem;
+  color: var(--accent-light);
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.arch-repo-url:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.arch-repo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.arch-repo-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
 }
 
 .arch-steps {
@@ -1329,7 +1414,9 @@ footer a:hover {
 }
 
 .nav-mobile-links a {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 16px 24px;
   color: var(--text-muted);
   text-decoration: none;
@@ -1371,6 +1458,16 @@ footer a:hover {
 }
 
 /* ── Responsive ── */
+@media (max-width: 1100px) {
+  .nav-links {
+    gap: 14px;
+  }
+
+  .nav-links .nav-section-link {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   .steps-grid {
     grid-template-columns: 1fr;

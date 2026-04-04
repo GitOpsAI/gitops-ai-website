@@ -63,6 +63,9 @@ const DOCS_MAP = {
   bootstrap: { path: 'docs/bootstrap.md', title: 'Bootstrap Walkthrough' },
   architecture: { path: 'docs/architecture.md', title: 'Architecture' },
   configuration: { path: 'docs/configuration.md', title: 'Configuration' },
+  'template-sync': { path: 'docs/template-sync.md', title: 'Template Synchronization' },
+  scaling: { path: 'docs/scaling.md', title: 'Scaling' },
+  security: { path: 'docs/security.md', title: 'Security Model' },
 };
 
 const docsCache = {};
@@ -211,13 +214,33 @@ function openDocs(e, docId) {
 
 function closeDocs(e) {
   if (e) e.preventDefault();
+  closeDocsSidebar();
   document.getElementById('docsOverlay').classList.remove('active');
   document.body.style.overflow = '';
   history.pushState(null, '', window.location.pathname);
 }
 
+function toggleDocsSidebar() {
+  const sidebar = document.querySelector('.docs-sidebar');
+  const overlay = document.getElementById('docsSidebarOverlay');
+  const btn = document.getElementById('docsMenuBtn');
+  const isOpen = sidebar.classList.toggle('open');
+  overlay.classList.toggle('open', isOpen);
+  btn.setAttribute('aria-expanded', String(isOpen));
+}
+
+function closeDocsSidebar() {
+  const sidebar = document.querySelector('.docs-sidebar');
+  const overlay = document.getElementById('docsSidebarOverlay');
+  const btn = document.getElementById('docsMenuBtn');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+  btn.setAttribute('aria-expanded', 'false');
+}
+
 function loadDoc(e, docId) {
   if (e) e.preventDefault();
+  closeDocsSidebar();
   window.location.hash = `docs/${docId}`;
   showDoc(docId);
 }
@@ -244,10 +267,12 @@ window.addEventListener('hashchange', handleHash);
 window.addEventListener('DOMContentLoaded', handleHash);
 
 document.addEventListener('keydown', (e) => {
-  if (
-    e.key === 'Escape' &&
-    document.getElementById('docsOverlay').classList.contains('active')
-  ) {
-    closeDocs();
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('docsOverlay');
+    if (document.querySelector('.docs-sidebar').classList.contains('open')) {
+      closeDocsSidebar();
+    } else if (overlay.classList.contains('active')) {
+      closeDocs();
+    }
   }
 });

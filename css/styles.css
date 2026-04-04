@@ -934,6 +934,7 @@ footer a:hover {
 .docs-topbar-title {
   font-weight: 700;
   font-size: 1rem;
+  flex: 1;
 }
 
 .docs-topbar-gitlab {
@@ -1265,6 +1266,38 @@ footer a:hover {
   -webkit-tap-highlight-color: transparent;
 }
 
+.docs-back span {
+  display: inline;
+}
+
+@media (max-width: 900px) {
+  .docs-back span {
+    display: none;
+  }
+}
+.docs-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 8px;
+  color: var(--text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Docs Sidebar Overlay (mobile drawer backdrop) ── */
+.docs-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 64px 0 0 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 160;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
 .nav-toggle svg {
   display: block;
 }
@@ -1359,8 +1392,37 @@ footer a:hover {
     display: block;
   }
 
-  .docs-sidebar {
+  .docs-menu-btn {
+    display: flex;
+  }
+
+  .docs-topbar-gitlab {
     display: none;
+  }
+
+  .docs-sidebar-overlay.open {
+    display: block;
+  }
+
+  .docs-sidebar {
+    display: block;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 161;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 0;
+  }
+
+  .docs-sidebar.open {
+    transform: translateX(0);
   }
 
   .docs-content {

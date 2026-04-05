@@ -26,12 +26,38 @@
 })();
 
 /* ── Clipboard ── */
-function copyCommand() {
-  navigator.clipboard.writeText('npx gitops-ai bootstrap');
+function copyCommand(cmd) {
+  const text =
+    typeof cmd === 'string' && cmd.length > 0 ? cmd : 'npx gitops-ai bootstrap';
+  navigator.clipboard.writeText(text);
   const tooltip = document.getElementById('copiedTooltip');
   tooltip.classList.add('show');
   setTimeout(() => tooltip.classList.remove('show'), 2000);
 }
+
+/* ── Install method toggle (npx vs install script) ── */
+(function initInstallMethodToggle() {
+  function applyMode(root, mode) {
+    root.dataset.installMode = mode;
+    root.querySelectorAll('.install-method-btn').forEach((btn) => {
+      const active = btn.dataset.installMode === mode;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+    root.querySelectorAll('.install-panel').forEach((panel) => {
+      const show = panel.dataset.installMode === mode;
+      panel.toggleAttribute('hidden', !show);
+    });
+  }
+
+  document.querySelectorAll('.install-commands').forEach((root) => {
+    root.querySelectorAll('.install-method-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        applyMode(root, btn.dataset.installMode);
+      });
+    });
+  });
+})();
 
 /* ── Scroll-triggered fade-up ── */
 const scrollObserver = new IntersectionObserver(

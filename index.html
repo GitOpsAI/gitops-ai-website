@@ -185,10 +185,25 @@
     Secure, reproducible, and ready to modify with your favourite AI coding assistant.
   </p>
   <div class="hero-actions animate animate-d3">
-    <div class="terminal-box" onclick="copyCommand()" id="terminalBox">
-      <span class="prompt">$</span>
-      <span class="cmd">npx gitops-ai bootstrap</span>
-      <span class="copy-hint">click to copy</span>
+    <div class="install-commands" data-install-mode="npx">
+      <div class="install-method-toggle" role="tablist" aria-label="Install method">
+        <button type="button" class="install-method-btn is-active" role="tab" aria-selected="true" data-install-mode="npx" id="install-toggle-hero-npx">npx</button>
+        <button type="button" class="install-method-btn" role="tab" aria-selected="false" data-install-mode="script" id="install-toggle-hero-script">bash script</button>
+      </div>
+      <div class="install-panel" data-install-mode="npx" role="tabpanel" aria-labelledby="install-toggle-hero-npx">
+        <div class="terminal-box" onclick="copyCommand('npx gitops-ai bootstrap')">
+          <span class="prompt">$</span>
+          <span class="cmd">npx gitops-ai bootstrap</span>
+          <span class="copy-hint">click to copy</span>
+        </div>
+      </div>
+      <div class="install-panel" data-install-mode="script" role="tabpanel" aria-labelledby="install-toggle-hero-script" hidden>
+        <div class="terminal-box terminal-box--curl" onclick="copyCommand('curl -fsSL https://bit.ly/4c1K1wR | bash')">
+          <span class="prompt">$</span>
+          <span class="cmd">curl -fsSL https://bit.ly/4c1K1wR | bash</span>
+          <span class="copy-hint">click to copy</span>
+        </div>
+      </div>
     </div>
   </div>
   <div class="hero-actions animate animate-d4">
@@ -240,7 +255,7 @@
       <div class="step-card">
         <div class="step-number">1</div>
         <h3>Run the Bootstrap</h3>
-        <p>A single <code>npx gitops-ai bootstrap</code> launches an interactive TUI wizard. Pick your components, enter credentials, and the CLI does the rest.</p>
+        <p>Run <code>npx gitops-ai bootstrap</code> or pipe the <a href="https://bit.ly/4c1K1wR" target="_blank" rel="noopener">bash script</a> to bash to get Node.js if needed, then launch the interactive TUI wizard. Pick your components, enter credentials, and the CLI does the rest.</p>
       </div>
       <div class="step-card">
         <div class="step-number">2</div>
@@ -663,12 +678,27 @@
   <div class="section-inner">
     <span class="section-label">Get Started</span>
     <h2 class="section-title">Your GitOps cluster is one command away</h2>
-    <p class="section-desc">Open your terminal, run the command, and the wizard handles the rest.</p>
+    <p class="section-desc">Open your terminal, copy <code>npx</code> or switch to the install script, and the wizard handles the rest.</p>
     <div class="cta-actions">
-      <div class="terminal-box" onclick="copyCommand()">
-        <span class="prompt">$</span>
-        <span class="cmd">npx gitops-ai bootstrap</span>
-        <span class="copy-hint">click to copy</span>
+      <div class="install-commands" data-install-mode="npx">
+        <div class="install-method-toggle" role="tablist" aria-label="Install method">
+          <button type="button" class="install-method-btn is-active" role="tab" aria-selected="true" data-install-mode="npx" id="install-toggle-cta-npx">npx</button>
+          <button type="button" class="install-method-btn" role="tab" aria-selected="false" data-install-mode="script" id="install-toggle-cta-script">bash script</button>
+        </div>
+        <div class="install-panel" data-install-mode="npx" role="tabpanel" aria-labelledby="install-toggle-cta-npx">
+          <div class="terminal-box" onclick="copyCommand('npx gitops-ai bootstrap')">
+            <span class="prompt">$</span>
+            <span class="cmd">npx gitops-ai bootstrap</span>
+            <span class="copy-hint">click to copy</span>
+          </div>
+        </div>
+        <div class="install-panel" data-install-mode="script" role="tabpanel" aria-labelledby="install-toggle-cta-script" hidden>
+          <div class="terminal-box terminal-box--curl" onclick="copyCommand('curl -fsSL https://bit.ly/4c1K1wR | bash')">
+            <span class="prompt">$</span>
+            <span class="cmd">curl -fsSL https://bit.ly/4c1K1wR | bash</span>
+            <span class="copy-hint">click to copy</span>
+          </div>
+        </div>
       </div>
       <div class="cta-buttons">
         <a href="#docs/prerequisites" onclick="openDocs(event, 'prerequisites')" class="btn-primary">

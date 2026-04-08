@@ -398,45 +398,13 @@ button.terminal-box.terminal-box--curl {
   color: var(--text);
 }
 
-/* Bash-style highlighting (install one-liner) */
-.terminal-box .bash-b,
-.bash-snippet .bash-b {
-  color: var(--cyan);
-}
-
-.terminal-box .bash-f,
-.bash-snippet .bash-f {
-  color: var(--orange);
-}
-
-.terminal-box .bash-u,
-.bash-snippet .bash-u {
-  color: var(--text);
-}
-
-.terminal-box .bash-p,
-.bash-snippet .bash-p {
-  color: var(--text-muted);
-}
-
-.terminal-box .bash-k,
-.bash-snippet .bash-k {
-  color: var(--accent-light);
-}
-
-.step-card code.bash-snippet {
+.step-card p code {
   font-family: var(--mono);
-  font-size: 0.88em;
-  padding: 0.2em 0.45em;
-  background: rgba(9, 9, 11, 0.65);
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  font-size: 0.92em;
+  color: var(--text);
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
-  max-width: 100%;
-  display: inline-block;
-  vertical-align: bottom;
 }
 
 .terminal-box__main {
@@ -514,27 +482,6 @@ button.terminal-box.terminal-box--curl {
 .npm-cli-version__on {
   font-weight: 500;
   opacity: 0.92;
-}
-
-/* Footer: same version emphasis, inline with legal line */
-.npm-cli-version-inline {
-  white-space: nowrap;
-}
-
-.npm-cli-version-inline [data-npm-version] {
-  font-family: var(--mono);
-  font-weight: 600;
-  color: var(--green);
-}
-
-footer .npm-cli-version-inline a {
-  border-bottom: 1px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-footer .npm-cli-version-inline a:hover {
-  color: var(--accent);
-  border-bottom-color: rgba(129, 140, 248, 0.45);
 }
 
 .terminal-box--curl {

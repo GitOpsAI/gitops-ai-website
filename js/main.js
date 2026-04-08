@@ -308,9 +308,7 @@ async function initNpmVersion() {
     nodes.forEach((el) => {
       el.textContent = '';
       el.setAttribute('aria-hidden', 'true');
-      const row = el.closest(
-        '.npm-cli-version, .npm-cli-version-inline, .nav-npm-pill',
-      );
+      const row = el.closest('.npm-cli-version, .nav-npm-pill');
       if (row) row.hidden = true;
     });
   }

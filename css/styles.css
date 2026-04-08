@@ -40,6 +40,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
+  /* Space for fixed footer so main content is not covered */
+  padding-bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── Navigation ── */
@@ -225,7 +227,7 @@ nav {
 
 /* ── Hero ── */
 .hero {
-  padding: 160px 24px 100px;
+  padding: 128px 24px 80px;
   text-align: center;
   position: relative;
 }
@@ -563,7 +565,7 @@ footer .npm-cli-version-inline a:hover {
   flex-shrink: 0;
   display: inline;
   font-family: var(--font);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--text-muted);
@@ -595,14 +597,14 @@ footer .npm-cli-version-inline a:hover {
     flex-basis: 100%;
     display: block;
     text-align: center;
-    margin-top: 6px;
+    margin-top: 4px;
     white-space: normal;
   }
 }
 
 /* ── Logos Row ── */
 .logos-section {
-  padding: 60px 24px 40px;
+  padding: 48px 19px 32px;
   text-align: center;
 }
 
@@ -1511,9 +1513,16 @@ section {
 
 /* ── Footer ── */
 footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
   padding: 40px 24px;
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border);
   text-align: center;
+  background: var(--bg);
 }
 
 footer p {
@@ -2111,7 +2120,7 @@ footer a:hover {
 
 @media (max-width: 640px) {
   .hero {
-    padding: 100px 16px 48px;
+    padding: 80px 16px 38px;
   }
 
   .hero h1 {
@@ -2151,6 +2160,15 @@ footer a:hover {
     border-radius: 10px;
   }
 
+  .terminal-box.terminal-box--curl {
+    font-size: 0.875rem;
+  }
+
+  .terminal-box.terminal-box--curl .terminal-box__main .copy-hint {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
   .terminal-box .cmd {
     white-space: normal;
   }
@@ -2178,7 +2196,7 @@ footer a:hover {
   }
 
   .logos-section {
-    padding: 32px 16px 24px;
+    padding: 26px 13px 19px;
   }
 
   .logos-row {
@@ -2366,7 +2384,7 @@ footer a:hover {
 
   footer {
     padding: 32px 16px;
-    padding-bottom: max(32px, env(safe-area-inset-bottom));
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
   }
 
   footer p {
@@ -2418,7 +2436,7 @@ footer a:hover {
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .hero h1 {
     font-size: 1.7rem;
   }
@@ -2426,6 +2444,16 @@ footer a:hover {
   .terminal-box {
     font-size: 0.72rem;
     padding: 10px 12px;
+  }
+
+  .terminal-box.terminal-box--curl {
+    font-size: 0.75rem;
+    padding: 9px 11px;
+  }
+
+  .terminal-box.terminal-box--curl .terminal-box__main .copy-hint {
+    font-size: 0.6875rem;
+    font-weight: 500;
   }
 
   .ai-tool {

@@ -40,8 +40,6 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
-  /* Space for fixed footer so main content is not covered */
-  padding-bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── Navigation ── */
@@ -1513,16 +1511,10 @@ section {
 
 /* ── Footer ── */
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 60;
   padding: 40px 24px;
   padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border);
   text-align: center;
-  background: var(--bg);
 }
 
 footer p {

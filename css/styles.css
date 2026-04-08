@@ -65,6 +65,77 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.nav-npm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  opacity: 0.72;
+  transition: opacity 0.2s, border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-npm-pill:hover {
+  border-color: rgba(39, 39, 42, 0.6);
+  background: rgba(24, 24, 27, 0.35);
+  color: var(--text-muted);
+  opacity: 0.95;
+}
+
+.nav-npm-pill:focus-visible {
+  outline: none;
+  border-color: rgba(113, 113, 122, 0.45);
+  box-shadow: 0 0 0 2px rgba(113, 113, 122, 0.2);
+  opacity: 1;
+}
+
+.nav-npm-pill__label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+.nav-npm-pill__ver {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  letter-spacing: -0.02em;
+  opacity: 0.9;
+}
+
+@media (max-width: 400px) {
+  .nav-npm-pill {
+    padding: 4px 8px;
+  }
+
+  .nav-npm-pill__label {
+    display: none;
+  }
+
+  .nav-brand {
+    gap: 6px;
+  }
 }
 
 .logo {
@@ -273,20 +344,37 @@ nav {
   background: var(--bg-card);
 }
 
-/* ── Terminal Box ── */
+/* ── Terminal Box (install command) ── */
+button.terminal-box {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+}
+
+/* Install command: bar only as wide as $ + curl + hint (no full-width dead zone) */
+button.terminal-box.terminal-box--curl {
+  width: max-content;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .terminal-box {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 28px;
+  padding: 12px 14px 12px 16px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
   font-family: var(--mono);
-  font-size: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
   color: var(--text-muted);
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   position: relative;
 }
 
@@ -295,24 +383,69 @@ nav {
   background: var(--bg-card-hover);
 }
 
+.terminal-box:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.28);
+}
+
 .terminal-box .prompt {
   color: var(--green);
+  flex-shrink: 0;
 }
 
 .terminal-box .cmd {
   color: var(--text);
 }
 
-.terminal-box .copy-hint {
-  font-family: var(--font);
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  opacity: 0;
-  transition: opacity 0.2s;
+/* Bash-style highlighting (install one-liner) */
+.terminal-box .bash-b,
+.bash-snippet .bash-b {
+  color: var(--cyan);
 }
 
-.terminal-box:hover .copy-hint {
-  opacity: 1;
+.terminal-box .bash-f,
+.bash-snippet .bash-f {
+  color: var(--orange);
+}
+
+.terminal-box .bash-u,
+.bash-snippet .bash-u {
+  color: var(--text);
+}
+
+.terminal-box .bash-p,
+.bash-snippet .bash-p {
+  color: var(--text-muted);
+}
+
+.terminal-box .bash-k,
+.bash-snippet .bash-k {
+  color: var(--accent-light);
+}
+
+.step-card code.bash-snippet {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  padding: 0.2em 0.45em;
+  background: rgba(9, 9, 11, 0.65);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.terminal-box__main {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .install-commands {
@@ -325,62 +458,141 @@ nav {
   margin: 0 auto;
 }
 
-.install-method-toggle {
+/* Latest version from registry.npmjs.org (see js/main.js initNpmVersion) */
+.npm-cli-version {
+  margin: 12px 0 0;
+  text-align: center;
+}
+
+.npm-cli-version__link {
   display: inline-flex;
-  align-self: center;
-  flex-shrink: 0;
-  padding: 1px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
-  gap: 1px;
-}
-
-.install-method-btn {
-  padding: 3px 9px;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text-muted);
-  font-family: var(--font);
-  font-size: 0.65rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 7px 16px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--bg-card);
+  font-size: 0.8125rem;
   font-weight: 500;
-  letter-spacing: 0.03em;
-  opacity: 0.65;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, opacity 0.2s;
-}
-
-.install-method-btn:hover:not(.is-active) {
-  opacity: 0.9;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
-.install-method-btn.is-active {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(250, 250, 250, 0.72);
+.npm-cli-version__link:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
 }
 
-.install-method-btn:focus-visible {
-  outline: 1px solid rgba(129, 140, 248, 0.45);
-  outline-offset: 1px;
+.npm-cli-version__link:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.28);
 }
 
-.install-panel {
-  width: 100%;
+.npm-cli-version__pkg {
+  font-family: var(--mono);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.npm-cli-version__ver {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--green);
+}
+
+.npm-cli-version__sep {
+  opacity: 0.45;
+  user-select: none;
+}
+
+.npm-cli-version__on {
+  font-weight: 500;
+  opacity: 0.92;
+}
+
+/* Footer: same version emphasis, inline with legal line */
+.npm-cli-version-inline {
+  white-space: nowrap;
+}
+
+.npm-cli-version-inline [data-npm-version] {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--green);
+}
+
+footer .npm-cli-version-inline a {
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+footer .npm-cli-version-inline a:hover {
+  color: var(--accent);
+  border-bottom-color: rgba(129, 140, 248, 0.45);
 }
 
 .terminal-box--curl {
-  align-items: flex-start;
-  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
   max-width: 100%;
+  transition: none;
 }
 
 .terminal-box--curl .cmd {
   word-break: break-word;
   overflow-wrap: anywhere;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* Plain text hint (no pill / button chrome) */
+.terminal-box--curl .terminal-box__main .copy-hint {
+  flex-shrink: 0;
+  display: inline;
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  button.terminal-box.terminal-box--curl {
+    width: 100%;
+  }
+
+  /*
+   * Keep "$ curl …" on one row; only "click to copy" wraps below.
+   * (column on .terminal-box__main stacked $ and curl as two separate lines.)
+   */
+  .install-commands .terminal-box--curl .terminal-box__main {
+    width: 100%;
+  }
+
+  .install-commands .terminal-box__main {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .install-commands .terminal-box__main .copy-hint {
+    flex-basis: 100%;
+    display: block;
+    text-align: center;
+    margin-top: 6px;
+    white-space: normal;
+  }
 }
 
 /* ── Logos Row ── */
@@ -1928,24 +2140,18 @@ footer a:hover {
   }
 
   .terminal-box {
-    display: flex;
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 12px;
     font-size: 0.8rem;
-    gap: 8px;
     border-radius: 10px;
   }
 
   .terminal-box .cmd {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    min-width: 0;
+    white-space: normal;
   }
 
   .terminal-box .copy-hint {
-    display: none;
+    font-size: 0.7rem;
   }
 
   .btn-primary,

@@ -126,12 +126,18 @@
 <!-- Navigation -->
 <nav>
   <div class="nav-inner">
-    <a href="#" class="logo">
-      <div class="logo-icon">
-        <img src="logo.png" alt="GitOps AI">
-      </div>
-      GitOps AI
-    </a>
+    <div class="nav-brand">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <img src="logo.png" alt="GitOps AI">
+        </div>
+        GitOps AI
+      </a>
+      <a class="nav-npm-pill" href="https://www.npmjs.com/package/gitops-ai" target="_blank" rel="noopener" title="gitops-ai on npm">
+        <span class="nav-npm-pill__label">npm</span>
+        <span class="nav-npm-pill__ver" data-npm-version aria-busy="true">…</span>
+      </a>
+    </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="3" y1="6" x2="21" y2="6"/>
@@ -185,25 +191,14 @@
     Secure, reproducible, and ready to modify with your favourite AI coding assistant.
   </p>
   <div class="hero-actions animate animate-d3">
-    <div class="install-commands" data-install-mode="npx">
-      <div class="install-method-toggle" role="tablist" aria-label="Install method">
-        <button type="button" class="install-method-btn is-active" role="tab" aria-selected="true" data-install-mode="npx" id="install-toggle-hero-npx">npx</button>
-        <button type="button" class="install-method-btn" role="tab" aria-selected="false" data-install-mode="script" id="install-toggle-hero-script">bash script</button>
-      </div>
-      <div class="install-panel" data-install-mode="npx" role="tabpanel" aria-labelledby="install-toggle-hero-npx">
-        <div class="terminal-box" onclick="copyCommand('npx gitops-ai bootstrap')">
+    <div class="install-commands">
+      <button type="button" class="terminal-box terminal-box--curl" onclick="copyCommand('curl -fsSL https://gitops-ai.vercel.app/install | bash')" aria-label="Copy install command to clipboard">
+        <span class="terminal-box__main">
           <span class="prompt">$</span>
-          <span class="cmd">npx gitops-ai bootstrap</span>
+          <span class="cmd"><span class="bash-b">curl</span> <span class="bash-f">-fsSL</span> <span class="bash-u">https://gitops-ai.vercel.app/install</span> <span class="bash-p">|</span> <span class="bash-k">bash</span></span>
           <span class="copy-hint">click to copy</span>
-        </div>
-      </div>
-      <div class="install-panel" data-install-mode="script" role="tabpanel" aria-labelledby="install-toggle-hero-script" hidden>
-        <div class="terminal-box terminal-box--curl" onclick="copyCommand('curl -fsSL https://bit.ly/4c1K1wR | bash')">
-          <span class="prompt">$</span>
-          <span class="cmd">curl -fsSL https://bit.ly/4c1K1wR | bash</span>
-          <span class="copy-hint">click to copy</span>
-        </div>
-      </div>
+        </span>
+      </button>
     </div>
   </div>
   <div class="hero-actions animate animate-d4">
@@ -255,7 +250,7 @@
       <div class="step-card">
         <div class="step-number">1</div>
         <h3>Run the Bootstrap</h3>
-        <p>Run <code>npx gitops-ai bootstrap</code> or pipe the <a href="https://bit.ly/4c1K1wR" target="_blank" rel="noopener">bash script</a> to bash to get Node.js if needed, then launch the interactive TUI wizard. Pick your components, enter credentials, and the CLI does the rest.</p>
+        <p>Run <code class="bash-snippet"><span class="bash-b">curl</span> <span class="bash-f">-fsSL</span> <span class="bash-u">https://gitops-ai.vercel.app/install</span> <span class="bash-p">|</span> <span class="bash-k">bash</span></code> — it installs Node.js when needed, then launches the interactive wizard. Pick your components, enter credentials, and the CLI does the rest.</p>
       </div>
       <div class="step-card">
         <div class="step-number">2</div>
@@ -678,27 +673,24 @@
   <div class="section-inner">
     <span class="section-label">Get Started</span>
     <h2 class="section-title">Your GitOps cluster is one command away</h2>
-    <p class="section-desc">Open your terminal, copy <code>npx</code> or switch to the install script, and the wizard handles the rest.</p>
+    <p class="section-desc">Open your terminal, copy the command below, and the wizard handles the rest.</p>
     <div class="cta-actions">
-      <div class="install-commands" data-install-mode="npx">
-        <div class="install-method-toggle" role="tablist" aria-label="Install method">
-          <button type="button" class="install-method-btn is-active" role="tab" aria-selected="true" data-install-mode="npx" id="install-toggle-cta-npx">npx</button>
-          <button type="button" class="install-method-btn" role="tab" aria-selected="false" data-install-mode="script" id="install-toggle-cta-script">bash script</button>
-        </div>
-        <div class="install-panel" data-install-mode="npx" role="tabpanel" aria-labelledby="install-toggle-cta-npx">
-          <div class="terminal-box" onclick="copyCommand('npx gitops-ai bootstrap')">
+      <div class="install-commands">
+        <button type="button" class="terminal-box terminal-box--curl" onclick="copyCommand('curl -fsSL https://gitops-ai.vercel.app/install | bash')" aria-label="Copy install command to clipboard">
+          <span class="terminal-box__main">
             <span class="prompt">$</span>
-            <span class="cmd">npx gitops-ai bootstrap</span>
+            <span class="cmd"><span class="bash-b">curl</span> <span class="bash-f">-fsSL</span> <span class="bash-u">https://gitops-ai.vercel.app/install</span> <span class="bash-p">|</span> <span class="bash-k">bash</span></span>
             <span class="copy-hint">click to copy</span>
-          </div>
-        </div>
-        <div class="install-panel" data-install-mode="script" role="tabpanel" aria-labelledby="install-toggle-cta-script" hidden>
-          <div class="terminal-box terminal-box--curl" onclick="copyCommand('curl -fsSL https://bit.ly/4c1K1wR | bash')">
-            <span class="prompt">$</span>
-            <span class="cmd">curl -fsSL https://bit.ly/4c1K1wR | bash</span>
-            <span class="copy-hint">click to copy</span>
-          </div>
-        </div>
+          </span>
+        </button>
+        <p class="npm-cli-version">
+          <a class="npm-cli-version__link" href="https://www.npmjs.com/package/gitops-ai" target="_blank" rel="noopener">
+            <span class="npm-cli-version__pkg">gitops-ai</span>
+            <span class="npm-cli-version__ver" data-npm-version aria-busy="true" aria-label="Latest version on npm">…</span>
+            <span class="npm-cli-version__sep" aria-hidden="true">·</span>
+            <span class="npm-cli-version__on">on npm</span>
+          </a>
+        </p>
       </div>
       <div class="cta-buttons">
         <a href="#docs/prerequisites" onclick="openDocs(event, 'prerequisites')" class="btn-primary">
@@ -787,6 +779,10 @@
   <p>
     GitOps AI &mdash; MIT License &mdash;
     <a href="https://github.com/GitOpsAI" target="_blank" rel="noopener">GitHub</a>
+    <span class="npm-cli-version-inline">
+      &mdash;
+      <a href="https://www.npmjs.com/package/gitops-ai" target="_blank" rel="noopener">npm <span data-npm-version aria-busy="true">…</span></a>
+    </span>
   </p>
 </footer>
 

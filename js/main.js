@@ -26,38 +26,17 @@
 })();
 
 /* ── Clipboard ── */
+const INSTALL_ONE_LINER =
+  'curl -fsSL https://gitops-ai.vercel.app/install | bash';
+
 function copyCommand(cmd) {
   const text =
-    typeof cmd === 'string' && cmd.length > 0 ? cmd : 'npx gitops-ai bootstrap';
+    typeof cmd === 'string' && cmd.length > 0 ? cmd : INSTALL_ONE_LINER;
   navigator.clipboard.writeText(text);
   const tooltip = document.getElementById('copiedTooltip');
   tooltip.classList.add('show');
   setTimeout(() => tooltip.classList.remove('show'), 2000);
 }
-
-/* ── Install method toggle (npx vs install script) ── */
-(function initInstallMethodToggle() {
-  function applyMode(root, mode) {
-    root.dataset.installMode = mode;
-    root.querySelectorAll('.install-method-btn').forEach((btn) => {
-      const active = btn.dataset.installMode === mode;
-      btn.classList.toggle('is-active', active);
-      btn.setAttribute('aria-selected', String(active));
-    });
-    root.querySelectorAll('.install-panel').forEach((panel) => {
-      const show = panel.dataset.installMode === mode;
-      panel.toggleAttribute('hidden', !show);
-    });
-  }
-
-  document.querySelectorAll('.install-commands').forEach((root) => {
-    root.querySelectorAll('.install-method-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        applyMode(root, btn.dataset.installMode);
-      });
-    });
-  });
-})();
 
 /* ── Scroll-triggered fade-up ── */
 const scrollObserver = new IntersectionObserver(
@@ -300,3 +279,41 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+/* ── Latest CLI version from npm registry ── */
+const NPM_PACKAGE = 'gitops-ai';
+const NPM_LATEST_URL = `https://registry.npmjs.org/${NPM_PACKAGE}/latest`;
+
+async function initNpmVersion() {
+  const nodes = document.querySelectorAll('[data-npm-version]');
+  if (!nodes.length) return;
+
+  try {
+    const res = await fetch(NPM_LATEST_URL, {
+      headers: { Accept: 'application/json' },
+    });
+    if (!res.ok) throw new Error(`npm registry ${res.status}`);
+    const data = await res.json();
+    const version =
+      data && typeof data.version === 'string' ? data.version.trim() : '';
+    if (!version || version.length > 128) {
+      throw new Error('unexpected version');
+    }
+    const label = `v${version}`;
+    nodes.forEach((el) => {
+      el.textContent = label;
+      el.removeAttribute('aria-busy');
+    });
+  } catch {
+    nodes.forEach((el) => {
+      el.textContent = '';
+      el.setAttribute('aria-hidden', 'true');
+      const row = el.closest(
+        '.npm-cli-version, .npm-cli-version-inline, .nav-npm-pill',
+      );
+      if (row) row.hidden = true;
+    });
+  }
+}
+
+window.addEventListener('DOMContentLoaded', initNpmVersion);

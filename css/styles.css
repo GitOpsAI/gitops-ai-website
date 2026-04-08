@@ -544,6 +544,11 @@ footer .npm-cli-version-inline a:hover {
   gap: 0;
   max-width: 100%;
   transition: none;
+  color: var(--text);
+}
+
+.terminal-box--curl .prompt {
+  color: var(--green);
 }
 
 .terminal-box--curl .cmd {
